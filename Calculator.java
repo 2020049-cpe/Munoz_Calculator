@@ -1,24 +1,38 @@
+/*Created by: Camille S. Munoz
+ * Year & Section: CPE3A
+ * Student Number: 2020049
+ * Description: Simple Calculator
+ */
 import java.awt.event.ActionListener;
 import java.awt.Color;
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
 import javax.swing.*;
 public class Calculator {
 	public static JFrame mainF;
-    public static Float arg1,arg2 = null;
     public static void app() throws NumberFormatException{
                mainF = new JFrame("Calculator");
                mainF.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                mainF.getContentPane().setBackground(Color.lightGray);
+               mainF.setResizable(false);
         JLabel title = new JLabel("Simple Arithmetic Calculator \nby:Camille Munoz");
                title.setBounds(50, 10, 500, 30);
         JLabel label1 = new JLabel("Input First Number.");
                label1.setBounds(50, 50, 200, 30); 
         JTextField input1 = new JTextField();
-                  input1.setBounds(50, 75, 200, 20);   
+                  input1.setBounds(50, 75, 200, 20);  
+                  input1.addKeyListener(new KeyAdapter(){
+                	  public void keyPressed(KeyEvent ke){
+                	  }
+                  });
         JLabel label2 = new JLabel("Input Second Number.");
                label2.setBounds(50,100, 200,30);
         JTextField input2 = new JTextField();
                   input2.setBounds(50,125, 200, 20);
+                  input2.addKeyListener(new KeyAdapter(){
+                	  public void kePressed(KeyEvent ke){
+                		  inputValidate(ke, input2);
+                	  }
+                  });
         JLabel label3 = new JLabel("Input Operation.");
                label3.setBounds(50,150, 200,30); 
         String[] operations = {"Addition","Subtraction","Multiplication","Division"};
@@ -29,12 +43,13 @@ public class Calculator {
         JButton execute = new JButton("Calculate");
                 execute.setBounds(300, 50, 100, 30);
                 execute.addActionListener(new ActionListener(){
-                    public void actionPerformed(ActionEvent e){
+                    public void actionPerformed(ActionEvent e) throws NumberFormatException{
                         try {
-                            arg1 = Float.parseFloat(input1.getText());
-                            arg2 = Float.parseFloat(input2.getText());
-                            String op = (String) input3.getSelectedItem();
-                            results.setText(Float.toString(calculate(arg1,arg2,op)));                              
+                        	results.setText(Float.toString(
+                        			calculate(Float.parseFloat(input1.getText()),
+                        			Float.parseFloat(input2.getText()),
+                                    (String) input3.getSelectedItem())
+                        	));
                         } catch (Exception err) {           
                             System.out.println(err);
                             JOptionPane.showMessageDialog(mainF,"Wrong/Empty Input","Error",JOptionPane.ERROR_MESSAGE);
@@ -49,6 +64,17 @@ public class Calculator {
         mainF.setSize(500,300);  
         mainF.setLayout(null);  
         mainF.setVisible(true); 
+    }
+    public static void inputValidate(KeyEvent ke,JTextField InputComponent){
+        String field = InputComponent.getText();
+        if ((ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9' )
+            ||(ke.getKeyChar() == '.' && field.chars().filter(ch -> ch == '.').count() <= 0)
+            || ke.getKeyCode() == KeyEvent.VK_BACK_SPACE
+            ){
+            InputComponent.setEditable(true);
+        } else{
+            InputComponent.setEditable(false);
+        }
     }
     public static float calculate(float num1, float num2, String operation) throws ArithmeticException {
         switch (operation) {
@@ -71,10 +97,7 @@ public class Calculator {
         return 0;
     }
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	public static void main(String[] args){
 		app();
-
 	}
-
 }
